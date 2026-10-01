@@ -1,0 +1,386 @@
+{
+  "version": 1,
+  "_comment": "aj_capabilities 的数据源。ref_media 缺省 = [\"image\"]；max_refs 只作防呆上限；params 暂留空。",
+  "platforms": {
+    "chatgpt": {
+      "types": [
+        "generate",
+        "describe",
+        "describe_generate"
+      ],
+      "generate_types": [
+        "image"
+      ],
+      "ref_uses": [
+        "image"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "gemini": {
+      "types": [
+        "generate",
+        "describe",
+        "describe_generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "doubao": {
+      "types": [
+        "generate",
+        "describe",
+        "describe_generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "dola": {
+      "types": [
+        "generate",
+        "describe",
+        "describe_generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "jimeng": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "ref_media": [
+        "image",
+        "video",
+        "audio"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "dreamina": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "ref_media": [
+        "image",
+        "video",
+        "audio"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "grok": {
+      "types": [
+        "generate",
+        "describe",
+        "describe_generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "ideogram": {
+      "types": [
+        "generate",
+        "describe",
+        "describe_generate"
+      ],
+      "generate_types": [
+        "image"
+      ],
+      "ref_uses": [
+        "image",
+        "sref",
+        "cref"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "qwen": {
+      "types": [
+        "generate",
+        "describe",
+        "describe_generate"
+      ],
+      "generate_types": [
+        "image"
+      ],
+      "ref_uses": [
+        "image"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "qianwen": {
+      "types": [
+        "generate",
+        "describe",
+        "describe_generate"
+      ],
+      "generate_types": [
+        "image"
+      ],
+      "ref_uses": [
+        "image"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "hailuo": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "hailuointl": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "kling": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "klingintl": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "vidu": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "viduintl": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "higgsfield": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "runway": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "lovart": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "lovartcn": {
+      "types": [
+        "generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "discord": {
+      "types": [
+        "generate",
+        "describe",
+        "describe_generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "sref",
+        "cref",
+        "oref",
+        "edit",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    },
+    "midjourney": {
+      "types": [
+        "generate",
+        "describe",
+        "describe_generate"
+      ],
+      "generate_types": [
+        "image",
+        "video"
+      ],
+      "ref_uses": [
+        "image",
+        "sref",
+        "cref",
+        "oref",
+        "edit",
+        "start",
+        "end"
+      ],
+      "max_refs": 50,
+      "params": {}
+    }
+  }
+}
