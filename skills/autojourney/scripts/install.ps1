@@ -307,7 +307,7 @@ function Main {
       New-Item -ItemType Directory -Path $script:Lock | Out-Null
     } else {
       $script:Lock = $null # 不是我们的锁，别删
-      Die (M "另一个安装正在进行（$AjHome\install.lock）。稍等再试；确定没有在跑的话删掉这个目录" "Another install is in progress ($AjHome\install.lock). Try again shortly; if you are sure none is running, delete this folder")
+      Die (M "另一个安装正在进行（$AjHome\install.lock）。稍等再试；确定没有在跑的话只删掉 install.lock 这一个文件夹，不要删 $AjHome" "Another install is in progress ($AjHome\install.lock). Try again shortly; if you are sure none is running, delete only the install.lock folder, not $AjHome")
     }
   }
 

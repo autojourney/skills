@@ -182,7 +182,7 @@ if ! mkdir "$AJ_HOME/install.lock" 2>/dev/null; then
     rm -rf "$AJ_HOME/install.lock"
     mkdir "$AJ_HOME/install.lock" || die "$(m "拿不到安装锁 $AJ_HOME/install.lock" "Can't get the install lock $AJ_HOME/install.lock")"
   else
-    die "$(m "另一个安装正在进行（$AJ_HOME/install.lock）。稍等再试；确定没有在跑的话删掉这个目录" "Another install is in progress ($AJ_HOME/install.lock). Try again shortly; if you are sure none is running, delete this folder")"
+    die "$(m "另一个安装正在进行（$AJ_HOME/install.lock）。稍等再试；确定没有在跑的话只删掉 install.lock 这一个文件夹，不要删 $AJ_HOME" "Another install is in progress ($AJ_HOME/install.lock). Try again shortly; if you are sure none is running, delete only the install.lock folder, not $AJ_HOME")"
   fi
 fi
 LOCK=$AJ_HOME/install.lock
