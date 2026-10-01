@@ -4,7 +4,7 @@ license: Apache-2.0
 description: Generate images and videos, describe images, and save the results to this machine on AI platforms through the Autojourney browser extension; also installs and sets up Autojourney. Use when the user wants to generate images or videos, describe an image, or batch-create on Doubao (豆包), ChatGPT, Gemini, Flow, Midjourney, Jimeng (即梦), Dreamina, Grok, Kling (可灵), Hailuo (海螺), Vidu, Runway, Higgsfield, Ideogram, Qwen (千问) or Lovart — e.g. "draw a picture with Doubao", "make four images with Midjourney", "make a video with Kling", "describe this image", "save them to the desktop" — or asks to install / set up Autojourney, or mentions Autojourney / aj_send / aj_wait.
 metadata:
   owner: autojourney
-  version: "1"
+  version: "2"
   lang: en
 ---
 

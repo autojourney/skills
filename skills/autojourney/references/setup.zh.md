@@ -5,7 +5,7 @@
 1. **看装好没有**：运行 `autojourney --version`。没输出版本号，先装本机程序：运行本技能文件夹里 `scripts/` 下对应本机系统的安装器（macOS 是 `install.sh`，用 bash 运行；Windows 一律是 `install.ps1`，用 PowerShell 运行，需要时带 `-ExecutionPolicy Bypass`，有 Git Bash 或 WSL 也不要跑 `install.sh`），运行时把环境变量 `AJ_SKILL_DIR` 设为本技能文件夹的完整路径。
    它会把 Autojourney 程序和使用说明装到用户目录下的 `.autojourney/`，并登记本技能文件夹以便自动更新；本机没有 Node 或 Bun 时会另外下载一个私有运行时（下载约 25–40MB，装好约 60–90MB），不需要用户装 Node。它不改 PATH、不改任何客户端的设置。装好了对用户只说一句「程序装好了」，别列运行时、文件路径这些细节；失败时把输出的最后几行原样告诉用户。
 2. **接入你所在的客户端**：你是 Claude Code、Claude 桌面端、Codex、Cursor、VS Code、Antigravity 之一，就运行 `autojourney add mcp --client <id>`（`<id>` 对应是 claude-code / claude-desktop / codex / cursor / vscode / antigravity），对用户只说一句「已接入 <客户端名>，重启后生效」，别解释备份、配置文件位置这些细节；重启前用命令行照样能用，后面的步骤不用等。已经接过会原样返回，重复运行没关系。
-   不是这六家：不要接。用户问怎么以工具形式使用时，运行 `autojourney add mcp --print-config`，把打印出来的配置片段给用户，让他自己写进客户端的 MCP 设置。别的客户端只在用户点名时才用 `--client` 接。
+   不是这六家：不要接，也不用跟用户提这件事（直接往下走就行，命令行和工具的效果一样）。用户问怎么以工具形式使用时，运行 `autojourney add mcp --print-config`，把打印出来的配置片段给用户，让他自己写进客户端的 MCP 设置。别的客户端只在用户点名时才用 `--client` 接。
 3. **自检**：运行 `autojourney status`。
 4. **浏览器那边要用户自己做**（你做不了，用自己的话告诉用户）：
    - 在浏览器里装好要用的平台对应的 Autojourney 插件，用 **Pro 会员**账号登录。插件在每个平台名字不同：豆包上叫 AutoBao、ChatGPT 上叫 AutoGPT、Gemini 上叫 AutoBanana、即梦上叫 DreamDance，其余多叫 AutoSail。
