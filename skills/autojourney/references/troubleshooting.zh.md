@@ -13,7 +13,7 @@
 | `version` | 某个页面上的插件太旧 | 请用户更新那个插件后刷新页面 |
 | `update` | 自动更新失败、已经切回原来的版本 | 照 `message` 做；当前版本照常能用 |
 | `install` | 本机安装不完整 | 重跑安装器（见下） |
-| 本机服务没能常驻（`sandbox` 项这么说，或 `daemon.pid` 每条命令都不同） | 你所在的客户端在命令结束时回收了进程树 | 改以工具形式接入，服务进程由客户端常驻：六家之一用 `autojourney add mcp --client <id>`，其他客户端用 `autojourney add mcp --print-config` 把配置给用户在客户端的 MCP 设置里添加，然后重启客户端。接入前的临时办法：同一条命令里先 `status`、等 15 秒再派 |
+| 本机服务没能常驻（`sandbox` 项这么说，或 `daemon.pid` 每条命令都不同） | 你所在的客户端在命令结束时回收了进程树 | 改以工具形式接入，服务进程由客户端常驻：七家之一用 `autojourney add mcp --client <id>`，其他客户端用 `autojourney add mcp --print-config` 把配置给用户在客户端的 MCP 设置里添加，然后重启客户端。接入前的临时办法：同一条命令里先 `status`、等 15 秒再派 |
 | 用户在客户端的技能列表里找不到 Autojourney | 技能文件夹放的不是你的客户端读取的目录 | 把整个 `autojourney` 文件夹挪到你客户端自己的技能目录，再重新登记：运行本机程序旁边的安装器副本（macOS 是 `~/.autojourney/bin/install.sh`，Windows 是 `%USERPROFILE%\.autojourney\bin\install.ps1`），带参数 `--skill-only`，`AJ_SKILL_DIR` 设为新位置 |
 
 **重跑安装器**：运行本技能文件夹里 `scripts/` 下对应本机系统的安装器（macOS 是 `install.sh`，用 bash 运行；Windows 一律是 `install.ps1`，用 PowerShell 运行，需要时带 `-ExecutionPolicy Bypass`，有 Git Bash 或 WSL 也不要跑 `install.sh`），运行时把环境变量 `AJ_SKILL_DIR` 设为本技能文件夹的完整路径。命令返回 `reinstall_required` 或 `upgrade_required` 时也这样做。装完不用重启客户端。

@@ -4,7 +4,7 @@ license: Apache-2.0
 description: 用 Autojourney 浏览器插件在 AI 平台上生图、生视频、图生文，并把结果保存到本机；也用于安装、设置 Autojourney。用户想在豆包、ChatGPT、Gemini、Flow、Midjourney、即梦、Dreamina、Grok、可灵、海螺、Vidu、Runway、Higgsfield、Ideogram、千问或 Lovart 上生图、生视频、描述图片或批量创作时使用，例如「用豆包画一张图」「让 Midjourney 生成四张」「用可灵做个视频」「把这张图描述一下」「存到桌面」；用户要安装、设置 Autojourney，或提到 Autojourney / aj_send / aj_wait 时也用。
 metadata:
   owner: autojourney
-  version: "3"
+  version: "5"
   lang: zh
 ---
 
@@ -28,8 +28,9 @@ metadata:
 ## 规则
 
 - 任务会扣用户在平台上的额度，拿不准用户要什么时先问再派。
+- 一次要派多条时，把每条的完整参数放进 `tasks` 数组、**一次提交整批**；不要一条一条发，更不要发一条等一条。先全部提交，再按用户的意思统一等或不等。
 - 所有功能都能用命令行完成：`autojourney <子命令>`。有 `aj_*` 工具时用工具，两者等价。
-- 以工具形式接入只做你自己所在的客户端（`references/setup.md` 第 2 步，支持 Claude Code、Claude 桌面端、Codex、Cursor、VS Code、Antigravity）；别的客户端用户点名才接。不在这六家里的，用户问起就把 `autojourney add mcp --print-config` 打印的配置给用户自己配。
+- 以工具形式接入只做你自己所在的客户端（`references/setup.md` 第 2 步，支持 Claude Code、Claude 桌面端、Codex、Cursor、VS Code、Antigravity、WorkBuddy）；别的客户端用户点名才接。不在这七家里的，用户问起就把 `autojourney add mcp --print-config` 打印的配置给用户自己配。
 
 ## 保持最新
 

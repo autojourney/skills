@@ -4,7 +4,7 @@ license: Apache-2.0
 description: Generate images and videos, describe images, and save the results to this machine on AI platforms through the Autojourney browser extension; also installs and sets up Autojourney. Use when the user wants to generate images or videos, describe an image, or batch-create on Doubao (豆包), ChatGPT, Gemini, Flow, Midjourney, Jimeng (即梦), Dreamina, Grok, Kling (可灵), Hailuo (海螺), Vidu, Runway, Higgsfield, Ideogram, Qwen (千问) or Lovart — e.g. "draw a picture with Doubao", "make four images with Midjourney", "make a video with Kling", "describe this image", "save them to the desktop" — or asks to install / set up Autojourney, or mentions Autojourney / aj_send / aj_wait.
 metadata:
   owner: autojourney
-  version: "3"
+  version: "5"
   lang: en
 ---
 
@@ -28,8 +28,9 @@ Below, `autojourney` means the local program. It isn't on PATH, so run it by its
 ## Rules
 
 - Jobs cost the user's credits on the platform. When you're not sure what the user wants, ask before sending.
+- When there are several jobs, put each job's full parameters in the `tasks` array and **submit the whole batch in one call**; don't send them one at a time, and never send one and wait for it before the next. Submit everything first, then wait or not as the user asked.
 - Everything works from the command line: `autojourney <subcommand>`. If `aj_*` tools are available, use them instead; they are the same thing.
-- Connect Autojourney as tools only to the client you are running in (`references/setup.md` step 2; supported: Claude Code, Claude Desktop, Codex, Cursor, VS Code, Antigravity); connect any other client only when the user names it. If you are not one of those six and the user asks, give them the config printed by `autojourney add mcp --print-config` to set up themselves.
+- Connect Autojourney as tools only to the client you are running in (`references/setup.md` step 2; supported: Claude Code, Claude Desktop, Codex, Cursor, VS Code, Antigravity, WorkBuddy); connect any other client only when the user names it. If you are not one of those seven and the user asks, give them the config printed by `autojourney add mcp --print-config` to set up themselves.
 
 ## Staying up to date
 
