@@ -4,7 +4,7 @@ license: Apache-2.0
 description: 用 Autojourney 浏览器插件在 AI 平台上生图、生视频、图生文，并把结果保存到本机；也用于安装、设置 Autojourney。用户想在豆包、ChatGPT、Gemini、Flow、Midjourney、即梦、Dreamina、Grok、可灵、海螺、Vidu、Runway、Higgsfield、Ideogram、千问或 Lovart 上生图、生视频、描述图片或批量创作时使用，例如「用豆包画一张图」「让 Midjourney 生成四张」「用可灵做个视频」「把这张图描述一下」「存到桌面」；用户要安装、设置 Autojourney，或提到 Autojourney / aj_send / aj_wait 时也用。
 metadata:
   owner: autojourney
-  version: "2"
+  version: "3"
   lang: zh
 ---
 
