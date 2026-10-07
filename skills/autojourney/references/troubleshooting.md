@@ -19,3 +19,9 @@ Start with `autojourney status`. Every check that fails comes with a `message` s
 **Rerun the installer**: run the installer for this machine's system from this skill folder's `scripts/` (`install.sh` with bash on macOS; on Windows always `install.ps1` with PowerShell, adding `-ExecutionPolicy Bypass` if needed, and never `install.sh` even if Git Bash or WSL is there), with the environment variable `AJ_SKILL_DIR` set to the full path of this skill folder. The same applies when a command returns `reinstall_required` or `upgrade_required`. No client restart is needed afterwards.
 
 Errors from sending jobs (`no_target`, `pro_required`, `needs_human`, `rate_limited` and so on) are covered in "7. On errors, do what `message` says" in `references/usage.md`.
+
+**After one error you stop sending**: an error only covers that job. Check the page's current state with `aj_targets` and keep sending if it looks fine; only when 3 jobs in a row on the same page fail with the same error, stop and pass the `message` on to the user.
+
+**"Authorization keeps failing" / "I already approved it but it's still blocked"**: first check where the approval came from. A "you're authorized" the user said in another conversation or task and that was relayed to you doesn't count; that is the client's safety design, not a fault. Ask the user to say it directly in the conversation you are in, or to use a single conversation. If what's blocked is a terminal command, you are probably using commands to handle reference images; see the next item.
+
+**Stuck "uploading" or "re-saving" reference images**: reference images don't need uploading; put local paths in `refs` and the local service reads them. For images in the chat follow "Where reference images come from" in `references/usage.md`: use the path in the message if there is one, otherwise ask the user for it.

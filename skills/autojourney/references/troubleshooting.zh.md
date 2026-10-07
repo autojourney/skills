@@ -19,3 +19,9 @@
 **重跑安装器**：运行本技能文件夹里 `scripts/` 下对应本机系统的安装器（macOS 是 `install.sh`，用 bash 运行；Windows 一律是 `install.ps1`，用 PowerShell 运行，需要时带 `-ExecutionPolicy Bypass`，有 Git Bash 或 WSL 也不要跑 `install.sh`），运行时把环境变量 `AJ_SKILL_DIR` 设为本技能文件夹的完整路径。命令返回 `reinstall_required` 或 `upgrade_required` 时也这样做。装完不用重启客户端。
 
 派任务时的错误（`no_target`、`pro_required`、`needs_human`、`rate_limited` 等）见 `references/usage.md` 的「7. 出错时照 `message` 做」。
+
+**报过一次错，之后就不敢再派**：报错只说明那一条。用 `aj_targets` 看页面现在的状态，正常就照常派；同一页面连续 3 条报同样的错，才停下来把 `message` 转告用户。
+
+**「授权一直不过」「已经授权了还是被拦」**：先看确认是从哪儿来的。用户在另一个对话或任务里说的「我授权」，转发过来不算数，这是客户端的安全设计，不是故障。请用户在你所在的这个对话里直接说，或者改成只用一个对话。如果拦住的是终端命令，多半是在用命令处理参考图，见下一条。
+
+**带参考图时卡在「上传」「转存」**：参考图不需要上传，`refs` 填本机路径，本机服务自己读。聊天里的图按 `references/usage.md` 的「参考图从哪来」处理：消息里有路径就直接用，没有就请用户给路径。

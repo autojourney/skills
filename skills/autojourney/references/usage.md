@@ -121,6 +121,8 @@ Put multiple jobs in the `tasks` array and submit the whole batch in one call. T
 
 Every result with `ok: false` and every failed job's `err_message` already says what to do next; pass it on to the user or follow it. When the pipeline is broken or the user says "can't connect" or "nothing happens", call `aj_status` first and tell the user the `message` of each failed check.
 
+**A failure only covers that one job.** An error describes the page at that moment, and the page may have recovered since (for page-level failures, the end of `err_message` may include the page's current state). Before sending more, go by the current state in `aj_targets`: if it looks fine, keep sending as usual. Don't use an earlier error as a reason not to send, and don't keep asking the user for confirmation over it. Only when 3 jobs in a row on the same page fail with the same error, stop and ask the user to handle it as the `message` says.
+
 Common ones:
 
 | Case | What to do |
@@ -129,9 +131,10 @@ Common ones:
 | `ambiguous_target` | See rule 2 |
 | `pro_required` | Tell the user this extension needs a Pro membership; the `message` has the extension name |
 | `extension_outdated` | Ask the user to update the extension and refresh the page |
-| `needs_human` | The page needs a person (captcha, expired sign-in): bring the tab to the front with `aj_focus_tab` and ask the user to handle it |
+| `needs_human` | The page needs a person (captcha, expired sign-in): bring the tab to the front with `aj_focus_tab` and ask the user to handle it; once handled, send as usual |
+| `page_changed` | The input box or buttons can't be found, usually because the page is temporarily on another screen: check the state with `aj_targets` and resend if it looks fine; only after several in a row on the same page, ask the user to go back to the creation page or update the extension |
 | `unsupported` | This platform doesn't support this kind of job or file: switch platforms (check with `aj_capabilities`). With `save_dir` / `save_overwrite` it can also mean the downloader isn't connected or is too old; do what the `message` says |
-| `rate_limited` | The platform is rate limiting; the `message` has the recovery time; try again later |
+| `rate_limited` | The platform is rate limiting: see the recovery time in the page's state from `aj_targets` and send as usual once it has passed; other platforms are not affected |
 | `busy` | The previous unstick hasn't finished: wait a few seconds and check the page state with `aj_targets`; don't call `aj_control` again |
 | `reinstall_required` | The local Autojourney install is incomplete: run the install command in the `message` (or ask the user to paste it into a terminal); no client restart needed |
 | `aj_send` succeeds but has a `message` | The target page is paused or in a long wait; the job is queued but will be sent late. Tell the user why and handle it as in "Page state and control" |
@@ -225,6 +228,23 @@ aj_send { "platform": "chatgpt", "prompt": "Redraw this in Ghibli style", "refs"
 ```
 
 For Midjourney style / character references use `{ "path": "...", "use": "sref" }` / `"cref"`; for the first / last frame of a video use `"start"` / `"end"`.
+
+**Where reference images come from**
+
+`refs` only takes local file paths. The local service reads the files directly, not through you and not through the client's sandbox. So:
+
+- Don't copy, re-save or upload them, and don't check the files with terminal commands first. A correct path is enough; if a file can't be read, `aj_send` returns `ref_not_found` with the reason.
+- Don't switch to the command line to deal with reference images. In sandboxed clients, terminal commands can't write outside the workspace; even after the user clicks allow, a slightly different command gets blocked again.
+
+Three cases, by where the image comes from:
+
+1. **The user gave a file path**: use it as is; paths starting with `~` work too.
+2. **The image is in the chat and the message carries a path**: use that path. For example, the ChatGPT desktop app / Codex saves pasted images as temporary files and the message shows `<image name=[Image #1] path="/var/folders/…/codex-clipboard-….png">`; put that `path` in `refs`. Multiple images map to `[Image #1]`, `[Image #2]`; when the user says "use the second one as the style reference", go by that number.
+3. **The image is in the chat but there is no path**: you can't get the file, and you can't save one either. Ask the user for the local path and tell them how to copy it: on macOS select the image in Finder and press ⌥⌘C; on Windows hold Shift, right-click the image and choose "Copy as path". Don't go searching through the downloads or temp folders.
+
+On the command line it works the same way; give `refs` as a JSON string: `--refs '["/path/a.png","/path/b.png"]'`.
+
+The page fetches the images within 30 minutes of sending; don't delete or move the files in the meantime.
 
 **Generate a video**
 
@@ -364,3 +384,5 @@ aj_history { "scope": "all", "platform": "doubao" }
 - Don't describe `already_sent` as "cancelled"
 - Don't pause, unstick or change settings with `aj_control` without telling the user (unless they asked you to handle it yourself)
 - Don't describe the job left at `generating` after an unstick as failed or done
+- Don't stop sending jobs because an earlier one failed: check the page's current state first
+- Don't copy, re-save or upload files for reference images, or switch to terminal commands for them
