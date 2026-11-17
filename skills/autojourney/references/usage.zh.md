@@ -45,7 +45,7 @@
 - 文生图：「用豆包画一只坐在窗台上的橘猫，水彩风格」
 - 图生图：「把这张图改成吉卜力风格，发给即梦」
 - 图生视频：「用可灵把这两张图做成首尾帧，生成一段视频，下载到桌面」
-- 图生文：「把这个文件夹里的图发给 Gemini，反推出 Midjourney 的提示词」（插件内置模板：midjourney / qwen / doubao / jimeng / chatgpt / sora / gemini / grok，另有 title_zh / title_en / filename_zh / filename_en 起标题、起文件名）
+- 图生文：「把这个文件夹里的图发给 Gemini，反推出 Midjourney 的提示词」（插件内置模板：midjourney / qwen / doubao / jimeng / chatgpt / gemini / grok，另有 title_zh / title_en / filename_zh / filename_en 起标题、起文件名）
 - 图生文后生图：「把这张图反推出提示词，再分别发给 ChatGPT 和 Gemini 生成图片，放一起对比」
 - 多平台、保存、命名：「同一句“雨夜的霓虹街头”，豆包、即梦、Grok 各画一张，存到桌面的 neon 文件夹，按平台名命名」
 
@@ -66,6 +66,21 @@
    - 能跑后台命令的客户端（如 Claude 的后台 Bash）：不想占住对话时把命令行版放到后台——`autojourney wait --group <g>`（要本机文件加 `--wait-download`），跑完再汇报；MCP 工具调用做不到后台
    - 之后用户问进度：`aj_wait` 带 `timeout_sec: 1`（看一眼当前状态，不卡住）或 `aj_history` 带 `group`
 6. 把结果交给用户：图片 / 视频链接在 `artifacts[].url`，本机文件在 `artifacts[].path`（要求下载，见下文），图生文的文字在 `texts`
+
+## 文生文与素材生文：`type: text`
+
+普通问答、写作和按素材要求生成正文都用 `text`；图片反推模板继续用 `describe`。当前仅 ChatGPT 主站的 AutoGPT 0.0.100 起支持，Agent 需 1.0.5 起。先看 `aj_targets` 对应页面的 `capabilities` 是否包含 `text`，不能只看版本号或静态能力表；旧插件不支持时请更新，不要降级成 `generate`。
+
+```json
+{"platform":"chatgpt","type":"text","prompt":"阅读素材，给出完整总结。保留段落。","refs":["~/Documents/brief.txt","~/Pictures/cat.png"]}
+```
+
+- `prompt` 必须非空；不带 `refs` 为文生文，带素材为素材生文。一次请求的全部素材组成一个任务，不读取面板组合数，也不按换行再拆分；批量继续用 `tasks`。
+- GPT text 最多 20 份素材，可混合图片和通用文件；单个通用 file ≤ 50MiB，图片 ≤ 30MiB、视频 ≤ 100MiB、音频 ≤ 30MiB。原文件名称、MIME、顺序、重复引用和字节保留；不套即梦 / Dreamina 的 15 秒限制。选择器支持文件不代表平台一定能解析所有格式，上传失败如实返回。
+- `text_ref_media` / `text_max_refs` 是该类型专用能力；不要用它放宽原生图的 `ref_media` / `max_refs`。任一文件缺失或超限会拒绝整条任务，不会丢文件后继续发。
+- 不使用 `prompt_template`、`prompt_count`、`prefix` / `suffix`、`generate_type` 或 refs 的 `use` / `weight`。正文要求直接写进 prompt，聊天 / 工作档继续使用面板原设置。
+- 成功结果是 `texts: [完整正文]`、`n: 1`，保留换行、Markdown 和编号，不按素材数拆分，也不要求 artifacts。`aj_wait` / `aj_history` 的 text 结果标记 `type: text`；`wait_download: true` 不会等待不存在的图片文件。
+- 不支持 `save_dir` / `save_name` / `save_overwrite`；需要文本文件时，拿到 `texts[0]` 后由助手写到用户指定的位置。
 
 ## 必须遵守的规则
 
@@ -121,7 +136,7 @@ Grok、可灵、海螺、Vidu、Runway、Higgsfield、Lovart、Flow 等平台是
 
 每个返回 `ok: false` 的结果、每个失败任务的 `err_message`，都写好了下一步该做什么，原样转告用户或照做即可。链路不通、用户说「连不上」「没反应」时先调 `aj_status`，把失败项的 `message` 告诉用户。
 
-**一次失败只管那一条。** 报错描述的是那一刻的页面，页面之后可能已经恢复（页面级的失败，`err_message` 末尾可能附有该页面现在的状态）。再派任务前以 `aj_targets` 里的当前状态为准，正常就照常派；不要拿之前的报错当理由不发，也不要为此反复找用户要确认。同一页面连续 3 条报同样的错，才停下来按 `message` 让用户处理。
+**一次失败只管那一条。** 报错描述的是那一刻的页面，页面之后可能已经恢复（页面级的失败，`err_message` 末尾可能附有该页面现在的状态）。再派任务前以 `aj_targets` 里的当前状态为准，正常就照常派；不要拿之前的报错当理由不发，也不要为此反复找用户要确认。同一页面连续 3 条报同样的错，才停下来按 `message` 让用户处理。**明确的积分 / 额度不足不适用这条重试规则：页面空闲不代表额度恢复，需先充值、升级或等待额度恢复。**
 
 常见的：
 
@@ -131,7 +146,7 @@ Grok、可灵、海螺、Vidu、Runway、Higgsfield、Lovart、Flow 等平台是
 | `ambiguous_target` | 见规则 2 |
 | `pro_required` | 告诉用户需要该插件的 Pro 会员，`message` 里有插件名 |
 | `extension_outdated` | 请用户更新插件后刷新页面 |
-| `needs_human` | 页面需要人处理（验证码、登录失效）：`aj_focus_tab` 把页签切到前台，请用户处理；处理好就照常派 |
+| `needs_human` | 按平台原始错误处理：积分 / 额度不足请用户充值、升级或等待恢复，恢复前不要重复派发；验证码、登录验证、确认弹窗用 `aj_focus_tab` 切过去处理。页面空闲不代表额度恢复 |
 | `page_changed` | 找不到输入框或按钮，多半是页面临时停在别处：`aj_targets` 看状态，正常就重发；同一页面连续几次再请用户切回创作页或更新插件 |
 | `unsupported` | 这个平台不支持这类任务或素材：换平台（`aj_capabilities` 查）。带 `save_dir` / `save_overwrite` 时也可能是下载器没连或太旧，照 `message` 说的做 |
 | `rate_limited` | 平台限流：恢复时间看 `aj_targets` 里该页面的状态，到点后照常派；其他平台不受影响 |
@@ -158,7 +173,7 @@ Grok、可灵、海螺、Vidu、Runway、Higgsfield、Lovart、Flow 等平台是
 | `user` | 用户在面板上点了暂停 | 先问用户要不要恢复 |
 | `agent` | AI 助手用 `aj_control` 暂停的 | 需要时 `resume` |
 | `credits` | 积分 / 额度不足 | 请用户充值，用户说好了再 `resume` |
-| `needs_human` | 验证码、登录等要人处理 | `aj_focus_tab` 切过去请用户处理，处理完 `resume` |
+| `needs_human` | 需人工处理，具体原因看原始错误 / `pause.message` | 额度不足先充值、升级或等待恢复；验证码、审核申诉、确认弹窗等用 `aj_focus_tab` 切过去处理，解决后再 `resume` |
 | `bots_not_found` | Discord 频道里没找到机器人 | 请用户检查频道，再 `resume` |
 | `not_sendable` | 等了很久页面还是发不出去，`pause.sendable.reason` 是原因（`generating` 上一条还在生成、`uploading` 素材还在上传、`disabled` 发送按钮不可用等） | `page.actions` 里有 `unstick` 就可以建议解卡；没有就请用户看看页面卡在哪 |
 | `check_failed` | 发送前检查出错，`pause.message` 带错误信息 | 把错误原样转告用户，处理后 `resume` |

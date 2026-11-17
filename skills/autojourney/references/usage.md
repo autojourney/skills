@@ -45,7 +45,7 @@ Sending jobs (one of each kind):
 - Text to image: "Draw an orange cat sitting on a windowsill with Doubao, watercolor style"
 - Image to image: "Turn this image into Ghibli style on Jimeng"
 - Image to video: "Use these two images as the first and last frames for a Kling video, and download it to my desktop"
-- Image to text: "Send the images in this folder to Gemini and reverse-engineer Midjourney prompts" (the extension's built-in templates: midjourney / qwen / doubao / jimeng / chatgpt / sora / gemini / grok, plus title_zh / title_en / filename_zh / filename_en for titles and file names)
+- Image to text: "Send the images in this folder to Gemini and reverse-engineer Midjourney prompts" (the extension's built-in templates: midjourney / qwen / doubao / jimeng / chatgpt / gemini / grok, plus title_zh / title_en / filename_zh / filename_en for titles and file names)
 - Describe, then generate: "Reverse-engineer a prompt from this image, then generate images with it on ChatGPT and on Gemini so I can compare them"
 - Several platforms, saving, naming: "Draw 'a neon street on a rainy night' on Doubao, Jimeng and Grok, one each, save them to a neon folder on my desktop named by platform"
 
@@ -66,6 +66,21 @@ To save locally, say where and what to call the files; to not wait for results, 
    - Clients that can run background commands (such as Claude's background Bash): to keep the conversation free, run the command-line form in the background—`autojourney wait --group <g>` (add `--wait-download` for local files)—and report when it finishes; MCP tool calls can't be backgrounded
    - When the user later asks for progress: `aj_wait` with `timeout_sec: 1` (a snapshot, doesn't block) or `aj_history` with `group`
 6. Hand the results to the user: image / video links are in `artifacts[].url`, local files in `artifacts[].path` (when downloading was requested, see below), and describe text in `texts`
+
+## Text generation and materials to text: `type: text`
+
+Use `text` for questions, writing and complete responses based on materials; use `describe` for image prompt templates. Initially supported only on the ChatGPT main site with AutoGPT 0.0.100+ and Agent 1.0.5+. Check that the selected page in `aj_targets` advertises `text` in `capabilities`; a version number or static capability table is not sufficient. Update an unsupported extension; never downgrade text to `generate`.
+
+```json
+{"platform":"chatgpt","type":"text","prompt":"Read these materials and write a complete summary. Keep paragraphs.","refs":["~/Documents/brief.txt","~/Pictures/cat.png"]}
+```
+
+- A non-empty `prompt` is required. Without `refs` this is text generation; with refs it is materials to text. All materials in one request form one job, independent of the panel grouping count and prompt newlines. Use `tasks` for a batch.
+- GPT text accepts up to 20 mixed materials: general files up to 50MiB each, images up to 30MiB, video up to 100MiB and audio up to 30MiB. Original names, MIME types, order, duplicate refs and bytes are preserved. Jimeng / Dreamina's 15-second limit does not apply. Accepting a file does not guarantee the platform can parse every format; upload failures are returned as failures.
+- `text_ref_media` / `text_max_refs` apply only to text. Do not broaden legacy image jobs' `ref_media` / `max_refs`. A missing or oversized file rejects the whole job without dropping attachments.
+- Text does not use `prompt_template`, `prompt_count`, `prefix` / `suffix`, `generate_type` or ref `use` / `weight`. Put response requirements in prompt; Chat / Work follows the existing panel setting.
+- Success returns `texts: [complete body]`, `n: 1`, preserving paragraphs, Markdown and numbering, without splitting by materials or requiring artifacts. Text results in `aj_wait` / `aj_history` carry `type: text`; `wait_download: true` does not wait for nonexistent media files.
+- `save_dir` / `save_name` / `save_overwrite` are unsupported. If the user wants a text file, write `texts[0]` to their requested location after receiving it.
 
 ## Rules you must follow
 
@@ -121,7 +136,7 @@ Put multiple jobs in the `tasks` array and submit the whole batch in one call. T
 
 Every result with `ok: false` and every failed job's `err_message` already says what to do next; pass it on to the user or follow it. When the pipeline is broken or the user says "can't connect" or "nothing happens", call `aj_status` first and tell the user the `message` of each failed check.
 
-**A failure only covers that one job.** An error describes the page at that moment, and the page may have recovered since (for page-level failures, the end of `err_message` may include the page's current state). Before sending more, go by the current state in `aj_targets`: if it looks fine, keep sending as usual. Don't use an earlier error as a reason not to send, and don't keep asking the user for confirmation over it. Only when 3 jobs in a row on the same page fail with the same error, stop and ask the user to handle it as the `message` says.
+**A failure only covers that one job.** An error describes the page at that moment, and the page may have recovered since (for page-level failures, the end of `err_message` may include the page's current state). Before sending more, go by the current state in `aj_targets`: if it looks fine, keep sending as usual. Don't use an earlier error as a reason not to send, and don't keep asking the user for confirmation over it. Only when 3 jobs in a row on the same page fail with the same error, stop and ask the user to handle it as the `message` says. **Explicit insufficient credits / quota are an exception to this retry rule: an idle page does not mean quota has recovered; top up, upgrade or wait for quota to recover first.**
 
 Common ones:
 
@@ -131,7 +146,7 @@ Common ones:
 | `ambiguous_target` | See rule 2 |
 | `pro_required` | Tell the user this extension needs a Pro membership; the `message` has the extension name |
 | `extension_outdated` | Ask the user to update the extension and refresh the page |
-| `needs_human` | The page needs a person (captcha, expired sign-in): bring the tab to the front with `aj_focus_tab` and ask the user to handle it; once handled, send as usual |
+| `needs_human` | Follow the original platform error: for insufficient credits / quota, ask the user to top up, upgrade or wait for recovery; do not keep sending before it recovers. Use `aj_focus_tab` for a captcha, sign-in verification or confirmation dialog. An idle page does not mean quota has recovered |
 | `page_changed` | The input box or buttons can't be found, usually because the page is temporarily on another screen: check the state with `aj_targets` and resend if it looks fine; only after several in a row on the same page, ask the user to go back to the creation page or update the extension |
 | `unsupported` | This platform doesn't support this kind of job or file: switch platforms (check with `aj_capabilities`). With `save_dir` / `save_overwrite` it can also mean the downloader isn't connected or is too old; do what the `message` says |
 | `rate_limited` | The platform is rate limiting: see the recovery time in the page's state from `aj_targets` and send as usual once it has passed; other platforms are not affected |
@@ -158,7 +173,7 @@ Every page in `aj_targets` has `page` (the page state) and `page_note` (a one-li
 | `user` | The user clicked pause in the panel | Ask the user before resuming |
 | `agent` | An AI assistant paused it with `aj_control` | `resume` when needed |
 | `credits` | Not enough credits / quota | Ask the user to top up; `resume` after they say it's done |
-| `needs_human` | A captcha, sign-in or similar needs a person | Switch to it with `aj_focus_tab` and ask the user to handle it; `resume` afterwards |
+| `needs_human` | Manual action is needed; see the original error / `pause.message` | For insufficient quota, top up, upgrade or wait for recovery first; use `aj_focus_tab` for a captcha, moderation appeal or confirmation dialog, then `resume` after resolving it |
 | `bots_not_found` | No bot found in the Discord channel | Ask the user to check the channel, then `resume` |
 | `not_sendable` | The page still couldn't send after a long wait; `pause.sendable.reason` is why (`generating` the previous job is still generating, `uploading` files are still uploading, `disabled` the send button is disabled, and so on) | If `page.actions` includes `unstick`, you can suggest unsticking; otherwise ask the user to look at where the page is stuck |
 | `check_failed` | The pre-send check failed; `pause.message` has the error | Pass the error on to the user as is; `resume` after it's fixed |

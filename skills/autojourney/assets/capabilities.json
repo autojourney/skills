@@ -6,7 +6,8 @@
       "types": [
         "generate",
         "describe",
-        "describe_generate"
+        "describe_generate",
+        "text"
       ],
       "generate_types": [
         "image"
@@ -15,7 +16,14 @@
         "image"
       ],
       "max_refs": 50,
-      "params": {}
+      "params": {},
+      "text_ref_media": [
+        "image",
+        "video",
+        "audio",
+        "file"
+      ],
+      "text_max_refs": 20
     },
     "gemini": {
       "types": [
