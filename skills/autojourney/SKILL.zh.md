@@ -4,7 +4,7 @@ license: Apache-2.0
 description: 用 Autojourney 浏览器插件在 AI 平台上生图、生视频、图生文，并把结果保存到本机；也用于安装、设置 Autojourney。用户想在豆包、ChatGPT、Gemini、Flow、Midjourney、即梦、Dreamina、Grok、可灵、海螺、Vidu、Runway、Higgsfield、Ideogram、千问或 Lovart 上生图、生视频、描述图片或批量创作时使用，例如「用豆包画一张图」「让 Midjourney 生成四张」「用可灵做个视频」「把这张图描述一下」「存到桌面」；用户要安装、设置 Autojourney，或提到 Autojourney / aj_send / aj_wait 时也用。
 metadata:
   owner: autojourney
-  version: "9"
+  version: "10"
   lang: zh
 ---
 
@@ -16,7 +16,7 @@ metadata:
 
 下文的 `autojourney` 指本机程序，它不在 PATH 里，执行时写完整路径：macOS 是 `~/.autojourney/bin/autojourney`，Windows 是 `%USERPROFILE%\.autojourney\bin\autojourney.cmd`（在 PowerShell 里写 `& "$env:USERPROFILE\.autojourney\bin\autojourney.cmd"`）。
 
-普通问答、写作或按文件素材生成完整正文，用 `type: text`，先确认目标页面 capabilities 包含 text；当前要求 GPT 0.0.100+、Agent 1.0.5+。prompt 必填，refs 可选，完整正文在 `texts[0]`。文件限制与兼容规则见 `references/usage.md`；图片反推模板仍用 describe。
+普通问答、写作或按文件素材生成完整正文，用 `type: text`，先确认目标页面 capabilities 包含 text。素材范围和数量优先看该页的 `text_ref_media` / `text_max_refs`，老页面未声明时参考静态能力表。prompt 必填，refs 可选，完整正文在 `texts[0]`。文件限制与兼容规则见 `references/usage.md`；图片反推模板仍用 describe。
 
 ## 按情况去读
 

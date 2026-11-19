@@ -69,14 +69,14 @@
 
 ## 文生文与素材生文：`type: text`
 
-普通问答、写作和按素材要求生成正文都用 `text`；图片反推模板继续用 `describe`。当前仅 ChatGPT 主站的 AutoGPT 0.0.100 起支持，Agent 需 1.0.5 起。先看 `aj_targets` 对应页面的 `capabilities` 是否包含 `text`，不能只看版本号或静态能力表；旧插件不支持时请更新，不要降级成 `generate`。
+普通问答、写作和按素材要求生成正文都用 `text`；图片反推模板继续用 `describe`。先看 `aj_targets` 对应页面的 `capabilities` 是否包含 `text`，素材范围和数量以该页的 `text_ref_media` / `text_max_refs` 为准，不能只看版本号或静态能力表；旧插件不支持时请更新，不要降级成 `generate`。
 
 ```json
 {"platform":"chatgpt","type":"text","prompt":"阅读素材，给出完整总结。保留段落。","refs":["~/Documents/brief.txt","~/Pictures/cat.png"]}
 ```
 
 - `prompt` 必须非空；不带 `refs` 为文生文，带素材为素材生文。一次请求的全部素材组成一个任务，不读取面板组合数，也不按换行再拆分；批量继续用 `tasks`。
-- GPT text 最多 20 份素材，可混合图片和通用文件；单个通用 file ≤ 50MiB，图片 ≤ 30MiB、视频 ≤ 100MiB、音频 ≤ 30MiB。原文件名称、MIME、顺序、重复引用和字节保留；不套即梦 / Dreamina 的 15 秒限制。选择器支持文件不代表平台一定能解析所有格式，上传失败如实返回。
+- 按选定页面声明的素材类型和数量上限派单，不合并同平台不同页面的能力。老页面没有新声明时沿用静态能力表（例如旧 GPT text 最多 20 份）。单个通用 file ≤ 50MiB，图片 ≤ 30MiB、视频 ≤ 100MiB、音频 ≤ 30MiB。原文件名称、MIME、顺序、重复引用和字节保留；不套即梦 / Dreamina 的 15 秒限制。选择器支持文件不代表平台一定能解析所有格式，上传失败如实返回。
 - `text_ref_media` / `text_max_refs` 是该类型专用能力；不要用它放宽原生图的 `ref_media` / `max_refs`。任一文件缺失或超限会拒绝整条任务，不会丢文件后继续发。
 - 不使用 `prompt_template`、`prompt_count`、`prefix` / `suffix`、`generate_type` 或 refs 的 `use` / `weight`。正文要求直接写进 prompt，聊天 / 工作档继续使用面板原设置。
 - 成功结果是 `texts: [完整正文]`、`n: 1`，保留换行、Markdown 和编号，不按素材数拆分，也不要求 artifacts。`aj_wait` / `aj_history` 的 text 结果标记 `type: text`；`wait_download: true` 不会等待不存在的图片文件。

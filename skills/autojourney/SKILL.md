@@ -4,7 +4,7 @@ license: Apache-2.0
 description: Generate images and videos, describe images, and save the results to this machine on AI platforms through the Autojourney browser extension; also installs and sets up Autojourney. Use when the user wants to generate images or videos, describe an image, or batch-create on Doubao (豆包), ChatGPT, Gemini, Flow, Midjourney, Jimeng (即梦), Dreamina, Grok, Kling (可灵), Hailuo (海螺), Vidu, Runway, Higgsfield, Ideogram, Qwen (千问) or Lovart — e.g. "draw a picture with Doubao", "make four images with Midjourney", "make a video with Kling", "describe this image", "save them to the desktop" — or asks to install / set up Autojourney, or mentions Autojourney / aj_send / aj_wait.
 metadata:
   owner: autojourney
-  version: "9"
+  version: "10"
   lang: en
 ---
 
@@ -16,7 +16,7 @@ Reply in the language the user speaks. Keep technical details (commands, paths) 
 
 Below, `autojourney` means the local program. It isn't on PATH, so run it by its full path: `~/.autojourney/bin/autojourney` on macOS, `%USERPROFILE%\.autojourney\bin\autojourney.cmd` on Windows (in PowerShell: `& "$env:USERPROFILE\.autojourney\bin\autojourney.cmd"`).
 
-For questions, writing or complete answers based on files, use `type: text` only when the selected page advertises `text`; currently GPT 0.0.100+ and Agent 1.0.5+. A prompt is required, refs are optional, and the complete body is returned in `texts[0]`. Read `references/usage.md` for file limits and compatibility. Image prompt templates remain `describe`.
+For questions, writing or complete answers based on files, use `type: text` only when the selected page advertises `text`. Use that page's `text_ref_media` / `text_max_refs` for allowed materials and count; fall back to the static capability table for older pages without a declaration. A prompt is required, refs are optional, and the complete body is returned in `texts[0]`. Read `references/usage.md` for file limits and compatibility. Image prompt templates remain `describe`.
 
 ## Where to go
 

@@ -69,14 +69,14 @@ To save locally, say where and what to call the files; to not wait for results, 
 
 ## Text generation and materials to text: `type: text`
 
-Use `text` for questions, writing and complete responses based on materials; use `describe` for image prompt templates. Initially supported only on the ChatGPT main site with AutoGPT 0.0.100+ and Agent 1.0.5+. Check that the selected page in `aj_targets` advertises `text` in `capabilities`; a version number or static capability table is not sufficient. Update an unsupported extension; never downgrade text to `generate`.
+Use `text` for questions, writing and complete responses based on materials; use `describe` for image prompt templates. Check that the selected page in `aj_targets` advertises `text` in `capabilities`, and use its `text_ref_media` / `text_max_refs` for materials. A version number or static capability table is not sufficient. Update an unsupported extension; never downgrade text to `generate`.
 
 ```json
 {"platform":"chatgpt","type":"text","prompt":"Read these materials and write a complete summary. Keep paragraphs.","refs":["~/Documents/brief.txt","~/Pictures/cat.png"]}
 ```
 
 - A non-empty `prompt` is required. Without `refs` this is text generation; with refs it is materials to text. All materials in one request form one job, independent of the panel grouping count and prompt newlines. Use `tasks` for a batch.
-- GPT text accepts up to 20 mixed materials: general files up to 50MiB each, images up to 30MiB, video up to 100MiB and audio up to 30MiB. Original names, MIME types, order, duplicate refs and bytes are preserved. Jimeng / Dreamina's 15-second limit does not apply. Accepting a file does not guarantee the platform can parse every format; upload failures are returned as failures.
+- Use the selected page's accepted media and count limit; never merge capabilities across pages of the same platform. Older pages without this declaration use the static table (for example, legacy GPT text accepts up to 20 materials). General files are limited to 50MiB each, images to 30MiB, video to 100MiB and audio to 30MiB. Original names, MIME types, order, duplicate refs and bytes are preserved. Jimeng / Dreamina's 15-second limit does not apply. Accepting a file does not guarantee the platform can parse every format; upload failures are returned as failures.
 - `text_ref_media` / `text_max_refs` apply only to text. Do not broaden legacy image jobs' `ref_media` / `max_refs`. A missing or oversized file rejects the whole job without dropping attachments.
 - Text does not use `prompt_template`, `prompt_count`, `prefix` / `suffix`, `generate_type` or ref `use` / `weight`. Put response requirements in prompt; Chat / Work follows the existing panel setting.
 - Success returns `texts: [complete body]`, `n: 1`, preserving paragraphs, Markdown and numbering, without splitting by materials or requiring artifacts. Text results in `aj_wait` / `aj_history` carry `type: text`; `wait_download: true` does not wait for nonexistent media files.
